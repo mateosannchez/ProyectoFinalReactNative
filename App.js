@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import {
   StyleSheet,
@@ -13,60 +12,75 @@ import {
   TouchableOpacity,
 } from "react-native";
 
+//import  Modal  from './Componentes/Modal';
+
+
 export default function App() {
 
   const [textItem, setTextItem] = useState('')
-  const [List, setList] = useState([])
+  const [Itemlist, setItemList] = useState([])
   const [modalVisible, setModalVisible] = useState(false);
   const [itemSelected, setItemSelected] = useState({})
 
-  const onHandleChangeItem = (t) => setTextItem(t);
+  const onHandleChangeItem = (t) => {
+    setTextItem(t);
+
+  }
 
   const addItem = () => {
-    setList(currentState => [
+    setItemList(currentState => [
       ...currentState,
       { id: Math.random().toString(), value: textItem }
     ])
     setTextItem("")
   }
 
-  const selectedItem = () => {
-    setItemSelected(List.filter(item => item.id === id)[0])
-    setModalVisible(true)
-  }
-
-  const deleteItem = () => {
-    setList((currentState) =>
-       currentState.filter(item => item.id !== itemSelected.id)
-      );
-      setItemSelected({});
-      setModalVisible(false)
-  }
-
   const renderItem = ({ item }) => {
-    <TouchableOpacity onPress={()=> selectedItem(item.id)}>
+    <TouchableOpacity onPress={() => selectedItem(item.id)}>
       <Text>{item.value}</Text>
       {/* <Button title='Borrar'/> */}
     </TouchableOpacity>
   }
 
+  const selectedItem = (id) => {
+    setItemSelected(Itemlist.filter(item => item.id === id)[0])
+    setModalVisible(true)
+  }
+
+  const deleteItem = () => {
+    setItemList((currentState) =>
+       currentState.filter((item) => item.id !== itemSelected.id)
+      );
+      setItemSelected({});
+      setModalVisible(false)
+  }
+
+
 
   return (
-    <View style={styles.navbar}>
-      <Text>Comics</Text>
+    <View style={styles.container}>
+      <Text style={{ fontSize: 30 }}>Comics</Text>
 
       <View style={styles.navbar__home}>
         <TextInput
-          value={textItem}
-          placeholder="Agregar item"
           onChangeText={onHandleChangeItem}
+          placeholder="agregar item"
+          placeholderTextColor="white"
+          style={styles.inputStyle}
+          value={textItem}
         />
-        <Button title='home' onPress={addItem} />
+
+        <TouchableOpacity style={styles.button} onPress={addItem}>
+          <Text> Add </Text>
+        </TouchableOpacity>
+
+        <Button title='home' />
 
         <View style={styles.navbar__logo}>
           {/* <TextInput /> */}
           <Button title='logo' />
         </View>
+
 
         <View style={styles.navbar__like}>
           {/* <TextInput /> */}
@@ -76,12 +90,12 @@ export default function App() {
      
       <View>
         <FlatList
-          data={List}
+          data={Itemlist}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
 
-        <Modal
+        {/* <Modal
           animationType='slide'
           transparent={true}
           visible={modalVisible}
@@ -89,8 +103,8 @@ export default function App() {
             Alert.alert("Modal has been closed");
             setModalVisible(!modalVisible);
           }}
-        />
-        <View>
+        /> */}
+        {/* <View>
           <View style={{backgroundColor: "white"}}>
             <Text>Borrar este elemento</Text>
             <Pressable
@@ -101,14 +115,27 @@ export default function App() {
             </Pressable>
           </View>
 
-        </View>
+        </View> */}
       </View>
 
+      {/* <Modal isVisible={modalVisible} actionDeleteItem={deleteItem} /> */}
+
     </View>
+
+  
   );
 }
 
+
+
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "red",
+    alignItems: "center",
+    paddingTop: 100,
+  },
   navbar: {
     margin: 30,
     backgroundColor: "red",
@@ -123,6 +150,14 @@ const styles = StyleSheet.create({
   navbar__logo: {
     flexDirection: 'row',
     justifyContent: "center"
+  },
+  button: {
+    backgroundColor: "white",
+    height: 35,
+    width: 45,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
   },
   navbar__like: {
     flexDirection: 'row',
